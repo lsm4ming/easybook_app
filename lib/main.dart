@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
 
 void main() => runApp(const MyApp());
 
@@ -40,6 +41,7 @@ class HomePageState extends State<HomePage> {
 
   void incCount() {
     setState(() {
+      nouns.take(50).forEach(print);
       _count++;
     });
   }
