@@ -1,37 +1,133 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: Scaffold(
-      appBar: AppBar(
-        title: const Text('你好Flutter'),
-      ),
-      body: const MyApp(),
-    ),
-  ));
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        alignment: Alignment.center,
-        width: 200,
-        height: 200,
-        decoration: BoxDecoration(
-            color: Colors.red, // 背景颜色
-            border: Border.all(color: Colors.black, width: 2), // 边框
-            borderRadius: BorderRadius.circular(10) // 配置圆角
+    return MaterialApp(
+      title: 'flutter测试',
+      initialRoute: "/",
+      theme: ThemeData(primarySwatch: Colors.blue),
+      routes: {
+        "/": (context) => const HomePage(title: '首页'),
+        "new_page": (context) => const NewRoute(),
+      },
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(builder: (context) {
+          String? routeName = settings.name;
+          print('routeName=$routeName');
+          return const HomePage(title: '');
+        });
+      },
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<StatefulWidget> createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+  int _count = 0;
+
+  void incCount() {
+    setState(() {
+      _count++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('你点击了按钮次数:'),
+            Text(
+              '$_count',
+              style: Theme.of(context).textTheme.displaySmall,
             ),
-        child: const Text(
-          '你好',
-          style: TextStyle(color: Colors.white, fontSize: 40),
+            TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const NewRoute();
+                  }));
+                },
+                child: const Text(
+                  '跳转新页面',
+                )),
+            ElevatedButton(
+              onPressed: () async {
+                var result = await Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
+                  return const TipRoute(text: "我是提示，hello");
+                }));
+                print("result=$result");
+              },
+              child: const Text('打开提示页面'),
+            )
+          ],
         ),
       ),
-      // child: Text('自定义组件', style: TextStyle(fontSize: 40, color: Colors.red),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: incCount,
+        tooltip: "自增",
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class NewRoute extends StatelessWidget {
+  const NewRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: const Text("新的页面")),
+        body: const Center(
+          child: Text("这是一个新的页面"),
+        ));
+  }
+}
+
+class TipRoute extends StatelessWidget {
+  const TipRoute({super.key, required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("提示"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Center(
+          child: Column(
+            children: [
+              Text(text),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, "我是返回值"),
+                child: const Text("返回"),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
