@@ -100,7 +100,13 @@ class NewRoute extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: const Text("新的页面")),
         body: const Center(
-          child: Text("这是一个新的页面"),
+          child: Column(
+            children: [
+              Text("这是一个新的页面"),
+              Image(image: AssetImage('lib/asset/image/1.jpeg'))
+            ],
+          )
+          // child: Text("这是一个新的页面"),
         ));
   }
 }
