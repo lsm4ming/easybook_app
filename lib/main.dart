@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:dio/dio.dart';
+
+final dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 5)));
 
 void main() => runApp(const MyApp());
 
@@ -79,7 +84,16 @@ class HomePageState extends State<HomePage> {
                 print("result=$result");
               },
               child: const Text('打开提示页面'),
-            )
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final response = await dio.get('https://www.baidu.com');
+                var statusMessage = response.statusMessage;
+                print("返回code:$statusMessage");
+                print(response.data);
+              },
+              child: const Text('发起网络请求'),
+            ),
           ],
         ),
       ),
@@ -103,7 +117,14 @@ class NewRoute extends StatelessWidget {
           child: Column(
             children: [
               Text("这是一个新的页面"),
-              Image(image: AssetImage('lib/asset/image/1.jpeg'))
+              Image(image: AssetImage('lib/asset/image/1.jpeg')),
+              SizedBox(height: 20), // 添加间距
+              // ElevatedButton(
+              //   onPressed: () {
+              //     print('hello');
+              //   },
+              //   child: Text('点击打印 Hello'),
+              // )
             ],
           )
           // child: Text("这是一个新的页面"),
